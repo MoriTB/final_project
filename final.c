@@ -371,7 +371,7 @@ int main()
       }
     else
     {
-      visual_map[backend[current->cell.x+random_number_x][current->cell.y+random_number_y].x][backend[current->cell.x+random_number_x][current->cell.y+random_number_y].y]='V';
+      visual_map[backend[current->cell.x+random_number_x][current->cell.y+random_number_y].x][backend[current->cell.x+random_number_x][current->cell.y+random_number_y].y]='v';
       backend[current->cell.x+random_number_x][current->cell.y+random_number_y].activate=1;
       add_end(player202,creat_node_manual(current->cell.x+random_number_x,current->cell.y+random_number_y));
       deleteNode(&player202,current);
@@ -395,17 +395,18 @@ int main()
         printf("under what name your file is going to be saved my lord\n");
         scanf("%s",name);
         save(choice-1,original_block_number,player101,player202,name);
+        whose_turn--;
     }
    if (((choice_second_second==4)&&(menu_looker!=3))||((choice_second_second==3)&&(menu_looker==3)))
     {
       
       char inname[max];
-      printf("what is your chosen name dragonborn(5 letter only)\n");
+      printf("what is your chosen name dragonborn(7 letter only)\n");
       getchar();
       fgets(inname,maxx,stdin);
      for(i=0;i<max;i++)
       current->cell.name[i]=inname[i];
-     
+     whose_turn--;
     }
     if(((choice_second_second==5)&&(menu_looker!=3))||((choice_second_second==4)&&(menu_looker==3)))
       {
@@ -417,7 +418,7 @@ int main()
         {
           print_list(player202);
         }
-        
+        whose_turn--;
         sleep(5);
       }
       if(((choice_second_second==6)&&(menu_looker!=3))||((choice_second_second==5)&&(menu_looker==3)))
