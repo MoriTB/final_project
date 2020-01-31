@@ -55,7 +55,7 @@ void deleteNode(struct node **list,struct node *current);
 void print_list(struct node *list);
 int check_around(int x,int y,int original_block_number);
 void save(int noe ,int original_blocks_number,struct node *player,struct node * second_player,char *inname);
-void load(char *inname,struct node *player,struct node *second_player);
+void load(char *inname,struct node **player,struct node **second_player);
 struct node * creat_node_manual_load(int vorodi_x, int vorodi_y,char inname[max],int energy);
 struct node  * creat_node_manual(int x,int y);
 int main()
@@ -80,7 +80,7 @@ int main()
          
           printf("which one your previous saved game you shall play ?\n give us the address my lady/my sir\n");
           scanf("%s",name_1);
-          load(name_1,player101,player202);
+          load(name_1,&player101,&player202);
           loaded=1;
           if (first_load_info[0]==1)
             choice=2;
@@ -171,10 +171,35 @@ int main()
       { 
        player101=add_cells2(cells_number,blocks_number,visual_map,original_block_number);
       }
-      else if (loaded==0)
+      else if ((loaded==0)&&(choice==3))
       {
       player101=add_cells2(cells_number,blocks_number,visual_map,original_block_number);
       player202=add_cells2(cells_number_2,blocks_number,visual_map,original_block_number);
+      }
+      else if((loaded==1)&&(choice==2))
+      {
+        printf("in?\n");
+        struct node *current_out=NULL;
+        for(current_out=player101;current_out!=NULL;current_out=current_out->next)
+          {
+          printf("the first movment is going through link\n");
+          visual_map[backend[current_out->cell.x][current_out->cell.y].x][backend[current_out->cell.x][current_out->cell.y].y]='V';
+          }
+      }
+      else if ((loaded==1)&&(choice==3))
+      {
+        printf("really in?\n");
+        struct node *current_out=NULL;
+        for(current_out=player101;current_out!=NULL;current_out=current_out->next)
+         {
+          printf("the first movment is going through link\n");
+          visual_map[backend[current_out->cell.x][current_out->cell.y].x][backend[current_out->cell.x][current_out->cell.y].y]='V';
+          }
+        for(current_out=player202;current_out!=NULL;current_out=current_out->next)  
+          {
+           printf("the first movment is going through link\n");
+          visual_map[backend[current_out->cell.x][current_out->cell.y].x][backend[current_out->cell.x][current_out->cell.y].y]='v';
+          }
       }
     print(blocks_number,visual_map);
     printf("\n");
@@ -183,7 +208,6 @@ int main()
     int turn_insider;
     while(1)
     {
-      
       counter=1;   
       system("clear");
       print(blocks_number,visual_map);
@@ -1105,7 +1129,7 @@ void save(int noe ,int original_blocks_number,struct node *player,struct node * 
   }
   fclose(fop);
 }
-void load(char *inname,struct node *player,struct node *second_player)
+void load(char *inname,struct node **player,struct node **second_player)
 {
   int i,j,tedad_player1,tedad_player2;
   char name[max];
@@ -1138,14 +1162,14 @@ void load(char *inname,struct node *player,struct node *second_player)
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
        if (player==NULL)
-          player=creat_node_manual_load(x,y,name,energy);
+          *player=creat_node_manual_load(x,y,name,energy);
       for(i=1;i<tedad_player1;i++)
       {
         fread(name,sizeof(char)*max,1,fop);
         fread(&x,sizeof(int),1,fop);
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
-        add_end(player,creat_node_manual_load(x,y,name,energy));
+        add_end(*player,creat_node_manual_load(x,y,name,energy));
       }
     }
   else if ((type_game==2)&&(tedad_player2!=0))
@@ -1155,34 +1179,34 @@ void load(char *inname,struct node *player,struct node *second_player)
         fread(&x,sizeof(int),1,fop);
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
-      player=creat_node_manual_load(x,y,name,energy);
+      *player=creat_node_manual_load(x,y,name,energy);
       for(i=1;i<tedad_player1;i++)
         {
         fread(name,sizeof(char)*max,1,fop);
         fread(&x,sizeof(int),1,fop);
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
-        add_end(player,creat_node_manual_load(x,y,name,energy));
+        add_end(*player,creat_node_manual_load(x,y,name,energy));
         }
         fread(name,sizeof(char)*max,1,fop);
         fread(&x,sizeof(int),1,fop);
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
-      second_player=creat_node_manual_load(x,y,name,energy);
+      *second_player=creat_node_manual_load(x,y,name,energy);
       for(i=1;i<tedad_player2;i++)
         {
         fread(name,sizeof(char)*max,1,fop);
         fread(&x,sizeof(int),1,fop);
         fread(&y,sizeof(int),1,fop);
         fread(&energy,sizeof(int),1,fop);
-        add_end(second_player,creat_node_manual_load(x,y,name,energy));
+        add_end(*second_player,creat_node_manual_load(x,y,name,energy));
         }
         
   }
   struct node *temp;
-  for(temp=player;temp!=NULL;temp=temp->next)
+  for(temp=*player;temp!=NULL;temp=temp->next)
           printf("%s cell is located at %d   and   %d  and has %d energy \n",temp->cell.name,temp->cell.x,temp->cell.y,temp->cell.energy);
-        for(temp=second_player;temp!=NULL;temp=temp->next)
+        for(temp=*second_player;temp!=NULL;temp=temp->next)
           printf("%s cell is located at %d   and   %d  and has %d energy \n",temp->cell.name,temp->cell.x,temp->cell.y,temp->cell.energy); 
   fclose(fop);
   sleep(7);
